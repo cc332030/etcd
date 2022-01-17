@@ -1,0 +1,73 @@
+Please check out CHANGELOG for a full list of changes. And make sure to read upgrade guide before upgrading etcd (there may be breaking changes).
+
+For installation guides, please check out play.etcd.io and operating etcd. Latest support status for common architectures and operating systems can be found at supported platforms.
+
+Release signing key can be found at coreos.comsecurityapp-signing-key.
+
+Linux
+ETCD_VER=v3.2.26
+
+# choose either URL
+GOOGLE_URL=httpsstorage.googleapis.cometcd
+GITHUB_URL=httpsgithub.cometcd-ioetcdreleasesdownload
+DOWNLOAD_URL=${GOOGLE_URL}
+
+rm -f tmpetcd-${ETCD_VER}-linux-amd64.tar.gz
+rm -rf tmpetcd-download-test && mkdir -p tmpetcd-download-test
+
+curl -L ${DOWNLOAD_URL}${ETCD_VER}etcd-${ETCD_VER}-linux-amd64.tar.gz -o tmpetcd-${ETCD_VER}-linux-amd64.tar.gz
+tar xzvf tmpetcd-${ETCD_VER}-linux-amd64.tar.gz -C tmpetcd-download-test --strip-components=1
+rm -f tmpetcd-${ETCD_VER}-linux-amd64.tar.gz
+
+tmpetcd-download-testetcd --version
+ETCDCTL_API=3 tmpetcd-download-testetcdctl version
+# start a local etcd server
+tmpetcd-download-testetcd
+
+# write,read to etcd
+ETCDCTL_API=3 tmpetcd-download-testetcdctl --endpoints=localhost2379 put foo bar
+ETCDCTL_API=3 tmpetcd-download-testetcdctl --endpoints=localhost2379 get foo
+macOS (Darwin)
+ETCD_VER=v3.2.26
+
+# choose either URL
+GOOGLE_URL=httpsstorage.googleapis.cometcd
+GITHUB_URL=httpsgithub.cometcd-ioetcdreleasesdownload
+DOWNLOAD_URL=${GOOGLE_URL}
+
+rm -f tmpetcd-${ETCD_VER}-darwin-amd64.zip
+rm -rf tmpetcd-download-test && mkdir -p tmpetcd-download-test
+
+curl -L ${DOWNLOAD_URL}${ETCD_VER}etcd-${ETCD_VER}-darwin-amd64.zip -o tmpetcd-${ETCD_VER}-darwin-amd64.zip
+unzip tmpetcd-${ETCD_VER}-darwin-amd64.zip -d tmp && rm -f tmpetcd-${ETCD_VER}-darwin-amd64.zip
+mv tmpetcd-${ETCD_VER}-darwin-amd64 tmpetcd-download-test && rm -rf mv tmpetcd-${ETCD_VER}-darwin-amd64
+
+tmpetcd-download-testetcd --version
+ETCDCTL_API=3 tmpetcd-download-testetcdctl version
+Docker
+etcd uses gcr.ioetcd-developmentetcd as a primary container registry, and quay.iocoreosetcd as secondary.
+
+rm -rf tmpetcd-data.tmp && mkdir -p tmpetcd-data.tmp && 
+  docker rmi gcr.ioetcd-developmentetcdv3.2.26  true && 
+  docker run 
+  -p 23792379 
+  -p 23802380 
+  --mount type=bind,source=tmpetcd-data.tmp,destination=etcd-data 
+  --name etcd-gcr-v3.2.26 
+  gcr.ioetcd-developmentetcdv3.2.26 
+  usrlocalbinetcd 
+  --name s1 
+  --data-dir etcd-data 
+  --listen-client-urls http0.0.0.02379 
+  --advertise-client-urls http0.0.0.02379 
+  --listen-peer-urls http0.0.0.02380 
+  --initial-advertise-peer-urls http0.0.0.02380 
+  --initial-cluster s1=http0.0.0.02380 
+  --initial-cluster-token tkn 
+  --initial-cluster-state new
+
+docker exec etcd-gcr-v3.2.26 binsh -c usrlocalbinetcd --version
+docker exec etcd-gcr-v3.2.26 binsh -c ETCDCTL_API=3 usrlocalbinetcdctl version
+docker exec etcd-gcr-v3.2.26 binsh -c ETCDCTL_API=3 usrlocalbinetcdctl endpoint health
+docker exec etcd-gcr-v3.2.26 binsh -c ETCDCTL_API=3 usrlocalbinetcdctl put foo bar
+docker exec etcd-gcr-v3.2.26 binsh -c ETCDCTL_API=3 usrlocalbinetcdctl get foo

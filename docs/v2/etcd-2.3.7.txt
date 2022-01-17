@@ -1,0 +1,39 @@
+Today we're announcing etcd v2.3.7. This is a minor bug-fix release.
+
+Changelog
+GH5683: store: copy old value when refresh + CAS
+Getting Started
+OS X
+To get started on OSX run the following in a terminal:
+
+curl -L  https://github.com/coreos/etcd/releases/download/v2.3.7/etcd-v2.3.7-darwin-amd64.zip -o etcd-v2.3.7-darwin-amd64.zip
+unzip etcd-v2.3.7-darwin-amd64.zip
+cd etcd-v2.3.7-darwin-amd64
+./etcd
+Open another terminal:
+
+./etcdctl set mykey "this is awesome"
+./etcdctl get mykey
+Linux
+To get started on Linux run the following in a terminal:
+
+curl -L  https://github.com/coreos/etcd/releases/download/v2.3.7/etcd-v2.3.7-linux-amd64.tar.gz -o etcd-v2.3.7-linux-amd64.tar.gz
+tar xzvf etcd-v2.3.7-linux-amd64.tar.gz
+cd etcd-v2.3.7-linux-amd64
+./etcd
+Open another terminal:
+
+./etcdctl set mykey "this is awesome"
+./etcdctl get mykey
+Docker
+To get started with Docker on Linux run the following in a terminal:
+
+docker run --name etcd quay.io/coreos/etcd:v2.3.7
+docker exec etcd /etcdctl set foo bar
+For advanced usage, please check our docker guide.
+
+ACI/rkt
+To get started with rkt on Linux run the following in a terminal:
+
+rkt run --volume data-dir,kind=host,source=/tmp --mds-register=false coreos.com/etcd:v2.3.7
+For more info about rkt command line, please check rkt commands.
