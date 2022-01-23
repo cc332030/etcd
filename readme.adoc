@@ -1,2 +1,11 @@
 
 = etcd
+
+etcd 是 CoreOS 基于 Raft 开发的分布式 key-value 存储，可用于服务发现、共享配置以及一（如数据库选主、分布式锁等）。
+
+. 基本的 key-value 存储
+. 监听机制
+. key 的过期及续约机制，用于监控和服务发现
+. 原子CAS和 CAD，用于分布式锁和 leader 选举
+
+image::image-2022-01-23-11-30-50-352.png[]
